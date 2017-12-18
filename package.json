@@ -1,0 +1,33 @@
+{
+  "name": "general-server",
+  "version": "1.0.0",
+  "description": "My webhost server for general purposes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukaas33/general-server.git"
+  },
+  "keywords": [
+    "server",
+    "general",
+    "heroku"
+  ],
+  "author": "Lucas van Osenbruggen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lukaas33/general-server/issues"
+  },
+  "dependencies": {
+    "express": "^4.9.8",
+    "fs": "0.0.1-security",
+    "mongodb": "^2.2.31"
+  },
+  "engines": {
+    "node": "6.10.3",
+    "npm": "3.10.10"
+  },
+  "homepage": "https://github.com/lukaas33/general-server#readme"
+}
