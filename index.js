@@ -7,9 +7,9 @@ const express = require('express')
 // const crypto = require('crypto')
 // const zlib = require('zlib')
 // const os = require('os')
-// const events = require('events')
 // const url = require('url')
 // const path = require('path')
+const events = require('events')
 
 // const input = require('./modules/input')
 // const run = require('./modules/run')
@@ -18,13 +18,19 @@ const clock = require('./modules/clock')
 const database = require('./modules/database')
 
 // Variables
-// const emit = new events.EventEmitter()
+const emit = new events.EventEmitter()
 const app = express()
+
+// Events
+emit.on('day', () => {
+  mail.send(mail.templates.status)
+})
 
 // Setup
 app.set('port', process.env.PORT || 5000) // Chooses a port
-clock.schedule('day', '18:50', 7, () => {
-  mail.send(mail.templates.status)
+
+clock.schedule('day', '23:00', Infinity, () => {
+  emit.emit('day')
 })
 
 // Routes
