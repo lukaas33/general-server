@@ -26,7 +26,7 @@ const schedule = function (interval, start, times, code) {
   }
 
   if (typeof(start) === 'string') { // Convert string to date
-    if (start.length === 4) { // Time
+    if (start.length === 5) { // Time
       let time = start.split(':')
       start = new Date(
         now.getFullYear(),
@@ -54,19 +54,25 @@ const schedule = function (interval, start, times, code) {
   }
 
   if (typeof(start) === 'object') { // Convert date to ms
-    start = start.getTime() - now.getTime()
+    let offset = now.getTimezoneOffset() * 60 * 1000
+    start = start.getTime() - (now.getTime() + offset)
   }
 
   var until = setTimeout(() => { // When it is time
-    var timer = setInterval(() => { // Repeat
-      code() // Execute
+    var execute = () => { // Execute code
+      code()
 
       timesLeft -= 1
       if (timesLeft === 0) {
         clearInterval(timer) // End
       }
+    }
+
+    execute() // First
+    var timer = setInterval(() => { // Repeat
+      execute()
     }, interval)
-  }, start - interval)
+  }, start)
 }
 
 module.exports = {schedule}

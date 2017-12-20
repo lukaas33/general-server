@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer')
+const os = require('os')
 
 const send = function (options) {
   const transporter = nodemailer.createTransport({
@@ -20,10 +21,15 @@ const templates = {
     from: process.env.USER,
     to: process.env.CONTACT,
     subject: 'Automated server update',
-    text: `
-      Sent at ${new Date()}.
-      Nothing else to say really.
-    `
+    text: `Sent at ${new Date()}.\n${
+      'Free memory ' +  Math.round(os.freemem() / os.totalmem())	* 100 + '%'
+    }.\n${
+      'Hosted at ' + os.hostname() + ' on ' + os.type()
+    }.\n${
+      'Uptime ' + Math.round(os.uptime()) + 's'
+    }.\n\n${
+      'Load average ' + os.loadavg()
+    }`
   }
 }
 

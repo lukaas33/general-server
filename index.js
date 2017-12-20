@@ -23,7 +23,7 @@ const app = express()
 
 // Setup
 app.set('port', process.env.PORT || 5000) // Chooses a port
-clock.schedule('day', '17:00', 7, () => {
+clock.schedule('day', '18:25', 7, () => {
   mail.send(mail.templates.status)
 })
 
