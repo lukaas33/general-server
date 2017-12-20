@@ -21,8 +21,10 @@ const templates = {
     from: process.env.USER,
     to: process.env.CONTACT,
     subject: 'Automated server update',
-    text: `Sent at ${new Date()}.\n${
-      'Free memory ' +  Math.round(os.freemem() / os.totalmem())	* 100 + '%'
+    text: `${
+      'Sent at' + new Date()
+    }.\n${
+      'Free memory ' +  os.freemem()
     }.\n${
       'Hosted at ' + os.hostname() + ' on ' + os.type()
     }.\n${

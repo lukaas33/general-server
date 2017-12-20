@@ -33,6 +33,20 @@ clock.schedule('day', '23:00', Infinity, () => {
   emit.emit('day')
 })
 
+database.connect()
+
+// database.query(`SELECT * FROM users`, (result) => {
+//   console.log(result)
+// })
+// database.query(`SELECT * FROM messages`, (result) => {
+//   console.log(result)
+// })
+
+// database.chat.user('add', ['aaaaaaaa', 'Lucas A', 'Netherlands', 17])
+// database.chat.user('add', ['aaaaaaab', 'Lucas B', 'Netherlands', 17])
+// database.chat.message(['ggggggggyyyyyyyy', 'aaaaaaaa', 'aaaaaaab', "Hello", '2017-12-20 22:00:00'])
+
+
 // Routes
 app.get('/', function (request, response) {
   response.send('Web client response')
