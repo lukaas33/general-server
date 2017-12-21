@@ -38,8 +38,8 @@ clock.schedule('day', '23:00', Infinity, () => {
 
 app.use(function (request, response, next) {
   // Needed headers for cors
-  response.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:8880, https://lucas-resume.herokuapp.com, https://www.lukaas33.com')
-  response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
+  response.setHeader('Access-Control-Allow-Origin', '*')
+  response.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE')
   next() // Next control layer
 })
 
