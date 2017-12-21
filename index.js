@@ -19,11 +19,13 @@ const chat = require('./modules/chat-app')
 
 // Variables
 const app = express()
-const general = new events.EventEmitter()
-const chat = new events.EventEmitter()
+const event = {
+  general: new events.EventEmitter(),
+  chat: new events.EventEmitter()
+}
 
 // Events
-general.on('day', () => {
+event.general.on('day', () => {
   mail.send(mail.templates.status)
 })
 
@@ -31,7 +33,7 @@ general.on('day', () => {
 app.set('port', process.env.PORT || 5000) // Chooses a port
 
 clock.schedule('day', '23:00', Infinity, () => {
-  general.emit('day')
+  event.general.emit('day')
 })
 
 
