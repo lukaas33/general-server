@@ -5,7 +5,7 @@ const user = function (action, values) {
 
   if (action === 'add') {
     string = `INSERT INTO users (ID, name, country, age)
-    VALUES ('${values[0]}', '${values[1]}', '${values[2]}', ${values[3]});`
+    VALUES ('${values.ID}', '${values.name}', '${values.country}', ${values.age});`
   } else if (action === 'remove') {
     string = `DELETE FROM users
     WHERE ID = '${values}';
@@ -18,7 +18,7 @@ const user = function (action, values) {
 
 const message = function (values) {
   var string = `INSERT INTO messages (messageID, sender, receiver, message, time)
-  VALUES ('${values[0]}', '${values[1]}', '${values[2]}', '${values[3]}', '${values[4]}');`
+  VALUES ('${values.messageID}', '${values.sender}', '${values.receiver}', '${values.message}', '${values.time}');`
   query(string)
 }
 

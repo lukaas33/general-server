@@ -49,19 +49,29 @@ app.get('/', function (request, response) {
 })
 
 
-app.post('/chat', function (request, response) {
+app.post('/chat?createuser', function (request, response) {
+  var data = JSON.parse(request.body)
+  try {
+    chat.user('add', data)
+    response.end('sucess')
+  } catch (error) {
+    response.end(error)
+  }
+})
+
+app.post('/chat?sendmessage', function (request, response) {
   console.log(request)
-  response.send('response')
+  response.end('sucess')
 })
 
 app.get('/chat', function (request, response) {
   console.log(request)
-  response.send('response')
+  response.end('sucess')
 })
 
 app.delete('/chat', function (request, response) {
   console.log(request)
-  response.send('response')
+  response.end('success')
 })
 
 
