@@ -15,14 +15,15 @@ const events = require('events')
 // const run = require('./modules/run')
 const mail = require('./modules/mail')
 const clock = require('./modules/clock')
-const database = require('./modules/database')
+const chat = require('./modules/chat-app')
 
 // Variables
-const emit = new events.EventEmitter()
 const app = express()
+const general = new events.EventEmitter()
+const chat = new events.EventEmitter()
 
 // Events
-emit.on('day', () => {
+general.on('day', () => {
   mail.send(mail.templates.status)
 })
 
@@ -30,27 +31,32 @@ emit.on('day', () => {
 app.set('port', process.env.PORT || 5000) // Chooses a port
 
 clock.schedule('day', '23:00', Infinity, () => {
-  emit.emit('day')
+  general.emit('day')
 })
 
-database.connect()
-
-// database.query(`SELECT * FROM users`, (result) => {
-//   console.log(result)
-// })
-// database.query(`SELECT * FROM messages`, (result) => {
-//   console.log(result)
-// })
-
-// database.chat.user('add', ['aaaaaaaa', 'Lucas A', 'Netherlands', 17])
-// database.chat.user('add', ['aaaaaaab', 'Lucas B', 'Netherlands', 17])
-// database.chat.message(['ggggggggyyyyyyyy', 'aaaaaaaa', 'aaaaaaab', "Hello", '2017-12-20 22:00:00'])
 
 
 // Routes
 app.get('/', function (request, response) {
   response.send('Web client response')
 })
+
+
+app.post('/chat', function (request, response) {
+  console.log(request)
+  response.send('response')
+})
+
+app.get('/chat', function (request, response) {
+  console.log(request)
+  response.send('response')
+})
+
+app.delete('/chat', function (request, response) {
+  console.log(request)
+  response.send('response')
+})
+
 
 app.listen(app.get('port'), () => {
   console.log(`Node app is running at ${app.get('port')}`)
