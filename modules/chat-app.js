@@ -1,4 +1,4 @@
-const database = require('./modules/database')
+const database = require('./database')
 
 const user = function (action, values) {
   var string = null
