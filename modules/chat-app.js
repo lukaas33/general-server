@@ -1,19 +1,19 @@
 const database = require('./database')
 
 const user = function (action, values) {
-  var string = null
-
   if (action === 'add') { // Add new user
-    string = `INSERT INTO users (ID, name, country, age)
+    let string = `INSERT INTO users (ID, name, country, age)
     VALUES ('${values.ID}', '${values.name}', '${values.country}', ${values.age});`
+    database.query(string)
   } else if (action === 'remove') { // Remove new user
-    string = `DELETE FROM users
-    WHERE ID = '${values}';
-    DELETE FROM messages
-    WHERE sender = '${values}' or receiver = '${values}';`
+    let userString = `DELETE FROM users
+    WHERE ID = '${values}'`
+    let messageString = `DELETE FROM messages
+    WHERE sender = '${values}' or receiver = '${values}'`
+    database.query(userString, (data) => {
+      database.query(messageString) // Can only run after
+    })
   }
-
-  database.query(string)
 }
 
 const message = function (values) {
@@ -22,26 +22,17 @@ const message = function (values) {
   database.query(string)
 }
 
-const get = function (id, callback) {
-  var messageString = `SELECT * FROM messages WHERE receiver = '${id}' or sender = '${id}' ORDER BY time DESC`
-  var userString = `SELECT * FROM users WHERE ID != '${id}' ORDER BY name ASC, ID ASC`
+const get = function (needed, ids, callback) {
+  var string = null
 
-  var left = 2
-  var result = {}
+  if (needed === 'messages') {
+    string = `SELECT * FROM messages WHERE receiver = '${ids[1]}' and sender = '${ids[0]}' ORDER BY time DESC`
+  } else if (needed === 'users') {
+    string = `SELECT * FROM users WHERE ID != '${ids}' ORDER BY name ASC, ID ASC`
+  }
 
-  database.query(userString, (data) => {
-    result.users = data // Store
-    left -= 1
-    if (left === 0) {
-      callback(result) // Return all
-    }
-  })
-  database.query(messageString, (data) => {
-    result.messages = data // Store
-    left -= 1
-    if (left === 0) {
-      callback(result) // Return all
-    }
+  database.query(string, (data) => {
+    callback(data) // Return
   })
 
 }
