@@ -10,8 +10,8 @@ const user = function (action, values) {
     WHERE ID = '${values}'`
     let messageString = `DELETE FROM messages
     WHERE sender = '${values}' or receiver = '${values}'`
-    database.query(userString, (data) => {
-      database.query(messageString) // Can only run after
+    database.query(messageString, (data) => {
+      database.query(userString) // Can only run after
     })
   }
 }
@@ -26,7 +26,7 @@ const get = function (needed, ids, callback) {
   var string = null
 
   if (needed === 'messages') {
-    string = `SELECT * FROM messages WHERE receiver = '${ids[1]}' and sender = '${ids[0]}' ORDER BY time DESC`
+    string = `SELECT * FROM messages WHERE (receiver = '${ids[1]}' and sender = '${ids[0]}') or (receiver = '${ids[0]}' and sender = '${ids[1]}') ORDER BY time DESC`
   } else if (needed === 'users') {
     string = `SELECT * FROM users WHERE ID != '${ids}' ORDER BY name ASC, ID ASC`
   }

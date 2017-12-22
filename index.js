@@ -31,7 +31,9 @@ event.general.on('day', () => {
   mail.send(mail.templates.status)
 })
 
-require('./modules/database').query('DELETE FROM users')
+var db = require('./modules/database')
+db.query('DELETE FROM users')
+
 
 // Setup
 app.set('port', process.env.PORT || 5000) // Chooses a port
@@ -83,19 +85,31 @@ app.post('/chat/createuser', function (request, response) {
 })
 
 app.post('/chat/sendmessage', function (request, response) {
-  console.log('# Chat', request)
-  response.end('success')
+  console.log(request.body)
+  try {
+    chat.message(request.body)
+    response.end('success')
+  } catch (error) {
+    response.end('error')
+  }
 })
 
 app.get('/chat/data/:id', function (request, response) {
   if (request.params.id.indexOf('-') !== -1) {
+    try {
+      chat.get('messages', request.params.id.split('-'), (data) => {
+        response.end(JSON.stringify(data))
+      })
+    } catch (error) {
+      console.log('# Chat', 'Data getting', error)
+      response.end('error')
+    }
 
   } else {
     console.log('# Chat', 'Check in', request.params.id)
     activeUsers[request.params.id] = true // Checks in
     try {
       chat.get('users', request.params.id, (data) => { // Request for chats
-        console.log(data)
         response.end(JSON.stringify(data))
       })
     } catch (error) {
