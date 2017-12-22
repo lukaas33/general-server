@@ -44,7 +44,7 @@ const end = function (callback = () => {}) {
   })
 }
 
-const query = function (query, callback = () => {}) {
+const query = function (query, callback = (data) => {}) {
   conn.query(query, function (error, result) {
     if (error) throw error
     callback(result)

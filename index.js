@@ -10,6 +10,7 @@ const express = require('express')
 // const url = require('url')
 // const path = require('path')
 const events = require('events')
+const bodyParser = require('body-parser')
 
 // const input = require('./modules/input')
 // const run = require('./modules/run')
@@ -36,10 +37,14 @@ clock.schedule('day', '23:00', Infinity, () => {
   event.general.emit('day')
 })
 
+app.use(bodyParser.json()) // Enable json parsing
+// app.use(bodyParser.urlencoded({extended: true}))
+
 app.use(function (request, response, next) {
   // Needed headers for cors
   response.setHeader('Access-Control-Allow-Origin', '*')
   response.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE')
+  response.setHeader('Access-Control-Allow-Headers', 'Content-Type')
   next() // Next control layer
 })
 
@@ -49,27 +54,34 @@ app.get('/', function (request, response) {
 })
 
 
-app.post('/chat?createuser', function (request, response) {
-  var data = JSON.parse(request.body)
+app.post('/chat/createuser', function (request, response) {
+  console.log(request.body)
   try {
-    chat.user('add', data)
-    response.end('sucess')
+    chat.user('add', request.body) // Add to database
+    response.end('success')
   } catch (error) {
-    response.end(error)
+    console.log('User not created', error)
+    response.end('error')
   }
 })
 
-app.post('/chat?sendmessage', function (request, response) {
+app.post('/chat/sendmessage', function (request, response) {
   console.log(request)
-  response.end('sucess')
+  response.end('success')
 })
 
-app.get('/chat', function (request, response) {
-  console.log(request)
-  response.end('sucess')
+app.get('/chat/data/:id', function (request, response) {
+  try {
+    chat.get(request.params.id, (data) => { // Request for chats
+      response.end(JSON.stringify(data))
+    })
+  } catch (error) {
+    console.log('Data getting', error)
+    response.end('error')
+  }
 })
 
-app.delete('/chat', function (request, response) {
+app.delete('/chat/deleteuser', function (request, response) {
   console.log(request)
   response.end('success')
 })
