@@ -32,6 +32,7 @@ event.general.on('day', () => {
 })
 
 var db = require('./modules/database')
+db.query('DELETE FROM messages')
 db.query('DELETE FROM users')
 
 
