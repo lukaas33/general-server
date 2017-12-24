@@ -1,6 +1,7 @@
 const database = require('./database')
 var activeUsers = {}
 
+// Functions
 const user = function (action, values) {
   if (action === 'add') { // Add new user
     let string = `INSERT INTO users (ID, name, country, age)
@@ -23,17 +24,18 @@ const message = function (values) {
   database.query(string)
 }
 
-const get = function (needed, ids, callback) {
-  var string = null
+const get = function (id, callback) {
+  messageString = `SELECT * FROM messages WHERE receiver = '${id}' or sender = '${id}' ORDER BY time DESC`
+  userString = `SELECT * FROM users WHERE ID != '${id}' ORDER BY name ASC, ID ASC`
 
-  if (needed === 'messages') {
-    string = `SELECT * FROM messages WHERE (receiver = '${ids[1]}' and sender = '${ids[0]}') or (receiver = '${ids[0]}' and sender = '${ids[1]}') ORDER BY time DESC`
-  } else if (needed === 'users') {
-    string = `SELECT * FROM users WHERE ID != '${ids}' ORDER BY name ASC, ID ASC`
-  }
 
-  database.query(string, (data) => {
-    callback(data) // Return
+  database.query(userString, (users) => {
+    database.query(messageString, (messages) => {
+      callback({ // Return
+        users: users,
+        messages: messages
+      })
+    })
   })
 
 }
@@ -42,6 +44,7 @@ const setup = function (app) {
   database.query('DELETE FROM messages')
   database.query('DELETE FROM users')
 
+  // Routes
   app.post('/chat/createuser', function (request, response) {
     console.log(request.body)
     try {
@@ -59,7 +62,7 @@ const setup = function (app) {
           delete activeUsers[id]
           clearInterval(check)
         }
-      }, 15000, request.body.ID)
+      }, 5000, request.body.ID)
 
     } catch (error) {
       console.log('# Chat', 'User not created', error)
@@ -78,27 +81,15 @@ const setup = function (app) {
   })
 
   app.get('/chat/data/:id', function (request, response) {
-    if (request.params.id.indexOf('-') !== -1) {
-      try {
-        get('messages', request.params.id.split('-'), (data) => {
-          response.end(JSON.stringify(data))
-        })
-      } catch (error) {
-        console.log('# Chat', 'Data getting', error)
-        response.end('error')
-      }
-
-    } else {
-      console.log('# Chat', 'Check in', request.params.id)
-      activeUsers[request.params.id] = true // Checks in
-      try {
-        get('users', request.params.id, (data) => { // Request for chats
-          response.end(JSON.stringify(data))
-        })
-      } catch (error) {
-        console.log('# Chat', 'Data getting', error)
-        response.end('error')
-      }
+    console.log('# Chat', 'Check in', request.params.id)
+    activeUsers[request.params.id] = true // Checks in
+    try {
+      get(request.params.id, (data) => { // Request for chats
+        response.end(JSON.stringify(data))
+      })
+    } catch (error) {
+      console.log('# Chat', 'Data getting', error)
+      response.end('error')
     }
   })
 }
