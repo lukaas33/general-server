@@ -45,46 +45,46 @@ const setup = function (app) {
   database.query('DELETE FROM users')
 
   // Routes
-  app.post('/chat/createuser', function (request, response) {
+  app.post('/chat', function (request, response) {
     console.log(request.body)
-    try {
-      user('add', request.body) // Add to database
-      response.end('success')
-      activeUsers[request.body.ID] = false // Track
-      let check = setInterval((id) => {
-        console.log('# Chat', 'Exists', id)
+    if (request.query.action === 'createuser') {
+      try {
+        user('add', request.body) // Add to database
+        response.end('success')
+        activeUsers[request.body.ID] = false // Track
+        let check = setInterval((id) => {
+          console.log('# Chat', 'Exists', id)
 
-        if (activeUsers[id]) { // Has checked in
-          activeUsers[id] = false // For next check
-        } else { // Hasn't checked in in time
-          user('remove', id) // Delete records
-          console.log('# Chat', 'Delete', id)
-          delete activeUsers[id]
-          clearInterval(check)
-        }
-      }, 5000, request.body.ID)
+          if (activeUsers[id]) { // Has checked in
+            activeUsers[id] = false // For next check
+          } else { // Hasn't checked in in time
+            user('remove', id) // Delete records
+            console.log('# Chat', 'Delete', id)
+            delete activeUsers[id]
+            clearInterval(check)
+          }
+        }, 5000, request.body.ID)
 
-    } catch (error) {
-      console.log('# Chat', 'User not created', error)
-      response.end('error')
+      } catch (error) {
+        console.log('# Chat', 'User not created', error)
+        response.end('error')
+      }
+    } else if (request.query.action === 'sendmessage') {
+      try {
+        message(request.body)
+        response.end('success')
+      } catch (error) {
+        response.end('error')
+      }
     }
+
   })
 
-  app.post('/chat/sendmessage', function (request, response) {
-    console.log(request.body)
+  app.get('/chat', function (request, response) {
+    console.log('# Chat', 'Check in', request.query.id)
+    activeUsers[request.query.id] = true // Checks in
     try {
-      message(request.body)
-      response.end('success')
-    } catch (error) {
-      response.end('error')
-    }
-  })
-
-  app.get('/chat/data/:id', function (request, response) {
-    console.log('# Chat', 'Check in', request.params.id)
-    activeUsers[request.params.id] = true // Checks in
-    try {
-      get(request.params.id, (data) => { // Request for chats
+      get(request.query.id, (data) => { // Request for chats
         response.end(JSON.stringify(data))
       })
     } catch (error) {
