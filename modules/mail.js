@@ -22,7 +22,7 @@ const templates = {
     to: process.env.CONTACT,
     subject: 'Automated server update',
     text: `${
-      'Sent at' + new Date()
+      'Sent at ' + new Date()
     }.\n${
       'Free memory ' +  os.freemem()
     }.\n${

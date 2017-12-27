@@ -1,4 +1,6 @@
 const database = require('./database')
+const chatbot = require('./dialogflow-interaction')
+const general = require('./general')
 var activeUsers = {}
 
 // Functions
@@ -21,7 +23,16 @@ const user = function (action, values) {
 const message = function (values) {
   var string = `INSERT INTO messages (messageID, sender, receiver, message, time)
   VALUES ('${values.messageID}', '${values.sender}', '${values.receiver}', '${values.message}', '${values.time}');`
-  database.query(string)
+  database.query(string, (response) => { // Make sure the chatbot responds after the message is in the database
+    if (values.receiver === 'chatbot') {
+      chatbot.sendText({session: values.sender, text: values.message, event: 'smalltalk'}, (data) => {
+        console.log(data)
+        var string = `INSERT INTO messages (messageID, sender, receiver, message, time)
+        VALUES ('${general.id(16)}', 'chatbot', '${values.sender}', '${data.result.fulfillment.speech}', '${data.timestamp}');`
+        database.query(string)
+      })
+    }
+  })
 }
 
 const get = function (id, callback) {
@@ -43,6 +54,13 @@ const get = function (id, callback) {
 const setup = function (app) {
   database.query('DELETE FROM messages')
   database.query('DELETE FROM users')
+
+  user('add', { // Permanent user
+    ID: 'chatbot',
+    name: 'Luc@$',
+    country: null,
+    age: null
+  })
 
   // Routes
   app.post('/chat', function (request, response) {
