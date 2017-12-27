@@ -12,4 +12,30 @@ const id = function (len) {
   return result.join('') // Add together
 }
 
-module.exports = {id}
+const escape = function (string) {
+  // From https://stackoverflow.com/questions/7744912/making-a-javascript-string-sql-friendly
+  result = string.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {  // Escape for sql
+    switch (char) {
+      case "\0":
+        return "\\0";
+      case "\x08":
+        return "\\b";
+      case "\x09":
+        return "\\t";
+      case "\x1a":
+        return "\\z";
+      case "\n":
+        return "\\n";
+      case "\r":
+        return "\\r";
+      case "\"":
+      case "'":
+      case "\\":
+      case "%":
+        return char+char
+    }
+  })
+  return result
+}
+
+module.exports = {id, escape}

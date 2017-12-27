@@ -7,7 +7,7 @@ var activeUsers = {}
 const user = function (action, values) {
   if (action === 'add') { // Add new user
     let string = `INSERT INTO users (ID, name, country, age)
-    VALUES ('${values.ID}', '${values.name}', '${values.country}', ${values.age});`
+    VALUES ('${values.ID}', '${general.escape(values.name)}', '${values.country}', ${values.age});`
     database.query(string)
   } else if (action === 'remove') { // Remove new user
     let userString = `DELETE FROM users
@@ -22,17 +22,21 @@ const user = function (action, values) {
 
 const message = function (values) {
   var string = `INSERT INTO messages (messageID, sender, receiver, message, time)
-  VALUES ('${values.messageID}', '${values.sender}', '${values.receiver}', '${values.message}', '${values.time}');`
-  database.query(string, (response) => { // Make sure the chatbot responds after the message is in the database
-    if (values.receiver === 'chatbot') {
-      chatbot.sendText({session: values.sender, text: values.message, event: 'smalltalk'}, (data) => {
-        console.log(data)
-        var string = `INSERT INTO messages (messageID, sender, receiver, message, time)
-        VALUES ('${general.id(16)}', 'chatbot', '${values.sender}', '${data.result.fulfillment.speech}', '${data.timestamp}');`
-        database.query(string)
-      })
-    }
-  })
+  VALUES ('${values.messageID}', '${values.sender}', '${values.receiver}', '${general.escape(values.message)}', '${values.time}');`
+  database.query(string)
+
+  if (values.receiver === 'chatbot') {
+    chatbot.sendText({session: values.sender, text: values.message, event: 'smalltalk'}, (data) => {
+      console.log(data)
+      var text = general.escape(data.result.fulfillment.speech)
+      var time = new Date()
+      time = new Date(time.getTime() + 1000) // Make the response appear behind the original message
+
+      var string = `INSERT INTO messages (messageID, sender, receiver, message, time)
+      VALUES ('${general.id(16)}', 'chatbot', '${values.sender}', '${text}', '${time.toISOString()}');`
+      database.query(string)
+    })
+  }
 }
 
 const get = function (id, callback) {
