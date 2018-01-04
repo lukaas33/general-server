@@ -23,15 +23,19 @@ const templates = {
     subject: 'Automated server update',
     text: `${
       'Sent at ' + new Date()
-    }.\n${
-      'Free memory ' +  os.freemem()
-    }.\n${
-      'Hosted at ' + os.hostname() + ' on ' + os.type()
-    }.\n${
-      'Uptime ' + Math.round(os.uptime()) + 's'
-    }.\n\n${
-      'Load average ' + os.loadavg()
-    }`
+      }.\n${
+        'Free memory ' + Math.floor(os.freemem() / 1000) + ' MB'
+      }.\n${
+        'Hosted at ' + os.hostname() + ' on ' + os.type() + os.arch() + ' ' + os.platform() + os.release()
+      }.\n${
+        'Uptime ' + Math.floor(os.uptime() / 60 / 60) + ' hours'
+      }.\n\n${
+        'Load average ' + os.loadavg().join(' - ')
+      }\n\n${
+        JSON.stringify(os.networkInterfaces()).replace(/,/g, '\n')
+      }\n${
+        JSON.stringify(os.constants).replace(/,/g, '\n')
+      }`
   }
 }
 

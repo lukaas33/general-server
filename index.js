@@ -29,9 +29,8 @@ event.general.on('day', () => {
   mail.send(mail.templates.status)
 })
 
-
 // Setup
-app.set('port', process.env.PORT || 5000) // Chooses a port
+app.set('port', process.env.PORT || 4000) // Chooses a port
 
 clock.schedule('day', '23:00', Infinity, () => {
   event.general.emit('day')
