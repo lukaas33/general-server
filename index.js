@@ -26,7 +26,7 @@ const event = {
 
 // Events
 event.general.on('day', () => {
-  mail.send(mail.templates.status)
+  // mail.send(mail.templates.status)
 })
 
 // Setup
@@ -41,7 +41,7 @@ app.use(bodyParser.json()) // Enable json parsing
 
 app.use(function (request, response, next) {
   // Needed headers for cors
-  response.setHeader('Access-Control-Allow-Origin', '*')
+  response.setHeader('Access-Control-Allow-Origin', 'https://lukaas33.com')
   response.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE')
   response.setHeader('Access-Control-Allow-Headers', 'Content-Type')
   next() // Next control layer
