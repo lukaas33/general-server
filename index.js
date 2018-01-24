@@ -31,7 +31,6 @@ event.general.on('day', () => {
 })
 
 // << Setup >>
-app.use(helmet())
 app.set('port', process.env.PORT || 4000) // Chooses a port
 
 clock.schedule('day', '23:00', Infinity, () => {
@@ -41,9 +40,13 @@ clock.schedule('day', '23:00', Infinity, () => {
 app.use(bodyParser.json()) // Enable json parsing
 // app.use(bodyParser.urlencoded({extended: true}))
 
+app.use(helmet())
 app.use(function (request, response, next) {
   // Needed headers for cors
-  response.setHeader('Access-Control-Allow-Origin', 'https://lukaas33.com, https://www.lukaas33.com, https://chat.lukaas33.com')
+  var allowed = ['https://lukaas33.com', 'https://www.lukaas33.com', 'https://chat.lukaas33.com']
+  if (allowed.indexOf(request.headers.origin) !== -1) { // Origin is allowed
+     response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
+  }
   response.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE')
   response.setHeader('Access-Control-Allow-Headers', 'Content-Type')
   next() // Next control layer
