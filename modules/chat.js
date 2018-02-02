@@ -1,9 +1,9 @@
+// << Variables >>
 const database = require('./database')
 const chatbot = require('./dialogflow-interaction')
 const general = require('./general')
-var activeUsers = {}
 
-// Functions
+// << Functions >>
 const user = function (action, values) {
   if (action === 'add') { // Add new user
     let string = `INSERT INTO users (ID, name, country, age)
@@ -62,68 +62,18 @@ const get = function (id, callback) {
       })
     })
   })
-
 }
 
-const setup = function (app) {
-  database.query('DELETE FROM messages')
-  database.query('DELETE FROM users')
 
-  user('add', { // Permanent user
-    ID: 'chatbot',
-    name: 'Luc@$',
-    country: null,
-    age: null
-  })
+// << Setup >>
+database.query('DELETE FROM messages')
+database.query('DELETE FROM users')
 
-  // Routes
-  app.post('/chat', function (request, response) {
-    console.log(request.body)
-    if (request.query.action === 'createuser') {
-      try {
-        user('add', request.body) // Add to database
-        response.end('success')
-        activeUsers[request.body.ID] = false // Track
-        let check = setInterval((id) => {
-          console.log('# Chat', 'Exists', id)
+user('add', { // Always available
+  ID: 'chatbot',
+  name: 'Luc@$',
+  country: null,
+  age: null
+})
 
-          if (activeUsers[id]) { // Has checked in
-            activeUsers[id] = false // For next check
-          } else { // Hasn't checked in in time
-            user('remove', id) // Delete records
-            console.log('# Chat', 'Delete', id)
-            delete activeUsers[id]
-            clearInterval(check)
-          }
-        }, 5000, request.body.ID)
-
-      } catch (error) {
-        console.log('# Chat', 'User not created', error)
-        response.end('error')
-      }
-    } else if (request.query.action === 'sendmessage') {
-      try {
-        message(request.body)
-        response.end('success')
-      } catch (error) {
-        response.end('error')
-      }
-    }
-
-  })
-
-  app.get('/chat', function (request, response) {
-    console.log('# Chat', 'Check in', request.query.id)
-    activeUsers[request.query.id] = true // Checks in
-    try {
-      get(request.query.id, (data) => { // Request for chats
-        response.end(JSON.stringify(data))
-      })
-    } catch (error) {
-      console.log('# Chat', 'Data getting', error)
-      response.end('error')
-    }
-  })
-}
-
-module.exports = {user, message, get, setup}
+module.exports = {user, message, get}
