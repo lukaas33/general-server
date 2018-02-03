@@ -16,7 +16,7 @@ router.use(function (request, response, next) {
 
 
 // << Routes >>
-router.post('', function (request, response) {
+router.post('', function (request, response, next) {
   console.log(request.body)
   if (request.query.action === 'createuser') {
     try {
@@ -37,20 +37,25 @@ router.post('', function (request, response) {
       }, 5000, request.body.ID)
 
     } catch (error) {
-      console.log('# Chat', 'User not created', error)
-      response.end('error')
+      console.log(error)
+      const err = new Error("Couldn't create user")
+      err.status = 500
+      next(err)
     }
   } else if (request.query.action === 'sendmessage') {
     try {
       chat.message(request.body)
       response.end('success')
     } catch (error) {
-      response.end('error')
+      console.log(error)
+      const err = new Error("Couldn't send message")
+      err.status = 500
+      next(err)
     }
   }
 })
 
-router.get('', function (request, response) {
+router.get('', function (request, response, next) {
   console.log('# Chat', 'Check in', request.query.id)
   activeUsers[request.query.id] = true // Checks in
   try {
@@ -58,8 +63,10 @@ router.get('', function (request, response) {
       response.end(JSON.stringify(data))
     })
   } catch (error) {
-    console.log('# Chat', 'Data getting', error)
-    response.end('error')
+    console.log(error)
+    const err = new Error("Couldn't get data")
+    err.status = 500
+    next(err)
   }
 })
 
