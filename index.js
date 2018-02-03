@@ -41,7 +41,7 @@ clock.schedule('day', '23:00', Infinity, () => {
 app.use(bodyParser.json()) // Enable json parsing
 // app.use(bodyParser.urlencoded({extended: true}))
 app.use(helmet())
-app.use((request, response, next) => {
+app.use(function (request, response, next) {
   // Needed headers for cors
   if (request.headers.origin) { // Not undefined
     if (request.headers.origin.includes('.lukaas33.com')) { // Origin is allowed, with subdomains
@@ -53,16 +53,6 @@ app.use((request, response, next) => {
 
 // << Routes >>
 app.use('/chat', chatRouter)
-
-// Error handle
-app.use((error, request, response) => {
-  if (!error.status) {
-    error.status = 500
-  }
-  console.log(error)
-  response.status(error.status).send(error.message)
-  response.end()
-})
 
 app.listen(app.get('port'), () => {
   console.log(`Node app is running at ${app.get('port')}`)
