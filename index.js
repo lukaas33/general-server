@@ -41,7 +41,7 @@ clock.schedule('day', '23:00', Infinity, () => {
 app.use(bodyParser.json()) // Enable json parsing
 // app.use(bodyParser.urlencoded({extended: true}))
 app.use(helmet())
-app.use(function (request, response, next) {
+app.use((request, response, next) => {
   // Needed headers for cors
   if (request.headers.origin) { // Not undefined
     if (request.headers.origin.includes('.lukaas33.com')) { // Origin is allowed, with subdomains

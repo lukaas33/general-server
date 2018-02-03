@@ -2,7 +2,7 @@
 const express = require('express')
 const chat = require('../modules/chat')
 const router = express.Router()
-var activeUsers = {}
+let activeUsers = {}
 
 
 // << Setup >>
@@ -21,7 +21,7 @@ router.post('', function (request, response) {
   if (request.query.action === 'createuser') {
     try {
       chat.user('add', request.body) // Add to database
-      response.end('success')
+      response.send('success')
       activeUsers[request.body.ID] = false // Track
       let check = setInterval((id) => {
         console.log('# Chat', 'Exists', id)
@@ -37,15 +37,16 @@ router.post('', function (request, response) {
       }, 5000, request.body.ID)
 
     } catch (error) {
-      console.log('# Chat', 'User not created', error)
-      response.end('error')
+      console.error(error)
+      response.send('error')
     }
   } else if (request.query.action === 'sendmessage') {
     try {
       chat.message(request.body)
-      response.end('success')
+      response.send('success')
     } catch (error) {
-      response.end('error')
+      console.error(error)
+      response.send('error')
     }
   }
 })
@@ -55,11 +56,11 @@ router.get('', function (request, response) {
   activeUsers[request.query.id] = true // Checks in
   try {
     chat.get(request.query.id, (data) => { // Request for chats
-      response.end(JSON.stringify(data))
+      response.send(JSON.stringify(data))
     })
   } catch (error) {
-    console.log('# Chat', 'Data getting', error)
-    response.end('error')
+    console.error(error)
+    response.send('error')
   }
 })
 

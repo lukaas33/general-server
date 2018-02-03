@@ -1,6 +1,6 @@
 const schedule = function (interval, start, times, code) {
-  var timesLeft = times
-  var now = new Date()
+  let timesLeft = times
+  let now = new Date()
 
   if (typeof(interval) === 'string') { // Convert string to ms
     switch (interval) {
@@ -58,8 +58,8 @@ const schedule = function (interval, start, times, code) {
     start = start.getTime() - (now.getTime() + offset)
   }
 
-  var until = setTimeout(() => { // When it is time
-    var execute = () => { // Execute code
+  let until = setTimeout(() => { // When it is time
+    let execute = () => { // Execute code
       code()
 
       timesLeft -= 1
@@ -69,7 +69,7 @@ const schedule = function (interval, start, times, code) {
     }
 
     execute() // First
-    var timer = setInterval(() => { // Repeat
+    let timer = setInterval(() => { // Repeat
       execute()
     }, interval)
   }, start)

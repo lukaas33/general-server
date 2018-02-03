@@ -28,30 +28,30 @@ const user = function (action, values) {
 }
 
 const message = function (values) {
-  var string = `INSERT INTO messages (messageID, sender, receiver, message, time)
+  let string = `INSERT INTO messages (messageID, sender, receiver, message, time)
   VALUES (?, ?, ?, ?, ?);`
 
-  var querystring = database.format(string, [values.messageID, values.sender, values.receiver, database.escape(values.message), values.time])
+  let querystring = database.format(string, [values.messageID, values.sender, values.receiver, database.escape(values.message), values.time])
   database.query(querystring)
 
   if (values.receiver === 'chatbot') {
     chatbot.sendText({session: values.sender, text: values.message, event: 'smalltalk'}, (data) => {
       console.log(data)
-      var text = database.escape(data.result.fulfillment.speech)
-      var time = new Date()
+      let text = database.escape(data.result.fulfillment.speech)
+      let time = new Date()
       time = new Date(time.getTime() + 1000) // Make the response appear behind the original message
 
-      var querystring = database.format(string, [general.id(16), 'chatbot', values.sender, text, time.toISOString()])
+      let querystring = database.format(string, [general.id(16), 'chatbot', values.sender, text, time.toISOString()])
       database.query(querystring)
     })
   }
 }
 
 const get = function (id, callback) {
-  var messageString = `SELECT * FROM messages WHERE receiver = ? or sender = ? ORDER BY time DESC`
+  let messageString = `SELECT * FROM messages WHERE receiver = ? or sender = ? ORDER BY time DESC`
   messageString = database.format(messageString, [id, id])
 
-  var userString = `SELECT * FROM users WHERE ID != ? ORDER BY name ASC, ID ASC`
+  let userString = `SELECT * FROM users WHERE ID != ? ORDER BY name ASC, ID ASC`
   userString = database.format(userString, [id])
 
   database.query(userString, (users) => {

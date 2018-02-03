@@ -7,7 +7,7 @@ const connect = function (callback = () => {}) {
     console.log('Connected to database')
   })
 
-  var tables = [
+  let tables = [
     `CREATE TABLE if not exists users (
       ID char(8) primary key not null,
       name char(64) not null,
@@ -24,7 +24,7 @@ const connect = function (callback = () => {}) {
       foreign key (receiver) references users(ID)
     );`
   ]
-  var done = tables.length
+  let done = tables.length
   for (let index in tables) {
     conn.query(tables[index], function (error, result) {
       if (error) throw error

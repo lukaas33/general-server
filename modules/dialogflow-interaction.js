@@ -2,7 +2,7 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest
 const target = 'https://api.dialogflow.com/v1/query?v=20150910'
 
 const sendText = function (data, callback) {
-  var http = new XMLHttpRequest()
+  let http = new XMLHttpRequest()
   http.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       callback(JSON.parse(this.responseText))
@@ -12,7 +12,7 @@ const sendText = function (data, callback) {
   http.setRequestHeader('Authorization', `Bearer ${process.env.DFACCES}`)
   http.setRequestHeader('Content-Type', 'application/json')
 
-  var body = {
+  let body = {
     // event: ,
     lang: 'en',
     query: data.text,
