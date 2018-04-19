@@ -54,6 +54,16 @@ app.use((request, response, next) => {
 // << Routes >>
 app.use('/chat', chatRouter)
 
+app.post('/mail', function (request, response) {
+    console.log('Email received')
+    mail.send({
+      from: process.env.USER,
+      to: process.env.CONTACT,
+      subject: `Email via server from ${request.get('host')}`,
+      text: request.body,
+    })
+})
+
 app.listen(app.get('port'), () => {
   console.log(`Node app is running at ${app.get('port')}`)
 })

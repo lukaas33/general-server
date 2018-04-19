@@ -36,7 +36,7 @@ const templates = {
       }\n${
         JSON.stringify(os.constants).replace(/,/g, '\n')
       }`
-  }
+  },
 }
 
 module.exports = {send, templates}
