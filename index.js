@@ -39,9 +39,11 @@ clock.schedule('day', '23:00', Infinity, () => {
 })
 
 app.use(bodyParser.json()) // Enable json parsing
-// app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.urlencoded({extended: true}))
 app.use(helmet())
 app.use((request, response, next) => {
+  response.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers")
+
   // Needed headers for cors
   if (request.headers.origin) { // Not undefined
     if (request.headers.origin.includes('.lukaas33.com')) { // Origin is allowed, with subdomains
@@ -58,9 +60,9 @@ app.post('/mail', function (request, response) {
     console.log('Email received')
     mail.send({
       from: process.env.USER,
-      to: process.env.CONTACT,
-      subject: `Email via server from ${request.get('host')}`,
-      text: request.body,
+      to: request.body.to,
+      subject: request.body.subject,
+      text: request.body.text,
     })
 })
 
