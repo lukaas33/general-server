@@ -6,13 +6,13 @@ const connect = function (callback = () => {}) {
     if (error) throw error
     console.log('Connected to database')
   })
-
   let tables = [
     `CREATE TABLE if not exists users (
       ID char(8) primary key not null,
       name char(64) not null,
       country char(64),
-      age int
+      age int,
+      pubkey varchar(4096)
     );`,
     `CREATE TABLE if not exists messages (
       messageID char(16) primary key not null,

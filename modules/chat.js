@@ -6,10 +6,10 @@ const general = require('./general')
 // << Functions >>
 const user = function (action, values) {
   if (action === 'add') { // Add new user
-    let string = `INSERT INTO users (ID, name, country, age)
-    VALUES (?, ?, ?, ?);`
+    let string = `INSERT INTO users (ID, name, country, age, pubkey)
+    VALUES (?, ?, ?, ?, ?);`
 
-    string = database.format(string, [values.ID, database.escape(values.name), values.country, values.age])
+    string = database.format(string, [values.ID, database.escape(values.name), values.country, values.age, values.pubkey])
     database.query(string)
   } else if (action === 'remove') { // Remove new user
     let userString = `DELETE FROM users
@@ -48,8 +48,8 @@ const message = function (values) {
 }
 
 const get = function (id, callback) {
-  let messageString = `SELECT * FROM messages WHERE receiver = ? or sender = ? ORDER BY time DESC`
-  messageString = database.format(messageString, [id, id])
+  let messageString = `SELECT * FROM messages WHERE receiver = ? ORDER BY time DESC`
+  messageString = database.format(messageString, [id])
 
   let userString = `SELECT * FROM users WHERE ID != ? ORDER BY name ASC, ID ASC`
   userString = database.format(userString, [id])
@@ -73,7 +73,8 @@ user('add', { // Always available
   ID: 'chatbot',
   name: 'Luc@$',
   country: null,
-  age: null
+  age: null,
+  pubkey: null
 })
 
 module.exports = {user, message, get}
