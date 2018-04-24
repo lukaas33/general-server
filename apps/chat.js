@@ -8,8 +8,6 @@ let activeUsers = {}
 // << Setup >>
 router.use(function (request, response, next) {
   // Needed headers for cors
-  response.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:8880')
-  // response.setHeader('Access-Control-Allow-Origin', 'https://chat.lukaas33.com')
   response.setHeader('Access-Control-Allow-Methods', 'GET, POST')
   response.setHeader('Access-Control-Allow-Headers', 'Content-Type')
   next() // Next control layer
