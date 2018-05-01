@@ -6,7 +6,9 @@ const connect = function (callback = () => {}) {
     if (error) throw error
     console.log('Connected to database')
   })
-  let tables = [
+
+  // Setup these
+  const tables = [
     `CREATE TABLE if not exists users (
       ID char(8) primary key not null,
       name char(64) not null,
@@ -22,8 +24,12 @@ const connect = function (callback = () => {}) {
       time datetime not null,
       foreign key (sender) references users(ID),
       foreign key (receiver) references users(ID)
+    );`,
+    `CREATE TABLE if not exists replied (
+      ID char(8) primary key not null
     );`
   ]
+
   let done = tables.length
   for (let index in tables) {
     conn.query(tables[index], function (error, result) {
@@ -49,32 +55,6 @@ const query = function (query, callback = (data) => {}) {
     if (error) throw error
     callback(result)
   })
-}
-
-const escape = function (string) {
-  // From https://stackoverflow.com/questions/7744912/making-a-javascript-string-sql-friendly
-  result = string.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {  // Escape for sql
-    switch (char) {
-      case "\0":
-        return "\\0";
-      case "\x08":
-        return "\\b";
-      case "\x09":
-        return "\\t";
-      case "\x1a":
-        return "\\z";
-      case "\n":
-        return "\\n";
-      case "\r":
-        return "\\r";
-      case "\"":
-      case "'":
-      case "\\":
-      case "%":
-        return char+char
-    }
-  })
-  return result
 }
 
 const format = sql.format
