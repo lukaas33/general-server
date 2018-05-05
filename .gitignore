@@ -1,6 +1,5 @@
 # Serves for local testing
 node_modules/
 .env
-package-lock.json
 __pycache__
 .ropeproject
