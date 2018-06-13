@@ -46,7 +46,7 @@ app.use((request, response, next) => {
 
   // Needed headers for cors
   if (request.headers.origin) { // Not undefined
-    if (request.headers.origin.includes('.lukaas33.com')) { // Origin is allowed, with subdomains
+    if (request.headers.origin.indexOf('.lukaas33.com') !== -1) { // Origin is allowed, with subdomains
       response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
     }
   }
